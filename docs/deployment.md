@@ -6,7 +6,7 @@ This guide describes a new deployment of the source code. It does not grant acce
 
 - A Cloudflare account
 - A domain managed by Cloudflare
-- Node.js 20.19 or newer
+- Node.js 22 or newer
 - npm
 - Wrangler authentication through `npx wrangler login`
 

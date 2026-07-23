@@ -52,7 +52,7 @@ If the request is approved, the sender receives a certificate-style HTML email. 
 
 Requirements:
 
-- Node.js 20.19 or newer
+- Node.js 22 or newer
 - npm
 
 ```sh
