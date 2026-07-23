@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+coverage/
+.tmp-workers-types/
+worker-configuration.d.ts
+*.log
+worker-startup.cpuprofile

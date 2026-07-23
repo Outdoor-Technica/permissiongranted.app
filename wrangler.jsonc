@@ -1,0 +1,66 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "permission-granted",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-07-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    {
+      "pattern": "permissiongranted.app",
+      "custom_domain": true
+    }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "permission-granted",
+      "migrations_dir": "./migrations"
+    }
+  ],
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": [
+        "requests@notify.permissiongranted.app",
+        "certificates@notify.permissiongranted.app"
+      ]
+    }
+  ],
+  "vars": {
+    "APP_BASE_URL": "https://permissiongranted.app",
+    "ALLOWED_HOSTNAME": "permissiongranted.app",
+    "EMAIL_FROM_REQUESTS": "requests@notify.permissiongranted.app",
+    "EMAIL_FROM_CERTIFICATES": "certificates@notify.permissiongranted.app",
+    "EMAIL_MODE": "send",
+    "ENVIRONMENT": "production",
+    "REQUEST_TTL_DAYS": "30",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
+  },
+  "secrets": {
+    "required": [
+      "TURNSTILE_SECRET_KEY",
+      "DATA_ENCRYPTION_KEY",
+      "EMAIL_HMAC_KEY",
+      "CONFIRMATION_HMAC_KEY"
+    ]
+  },
+  "triggers": {
+    "crons": ["17 3 * * *"]
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01
+    }
+  }
+}

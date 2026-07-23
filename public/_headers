@@ -1,0 +1,25 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/verify/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer
+
+/respond/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer
+
+/manage/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer
+
+/report/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer

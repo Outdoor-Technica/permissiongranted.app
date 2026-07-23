@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local development.
+# Cloudflare's published test secret always accepts the matching visible test widget.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+DATA_ENCRYPTION_KEY=replace-with-base64-encoded-32-random-bytes
+EMAIL_HMAC_KEY=replace-with-at-least-32-random-characters
+CONFIRMATION_HMAC_KEY=replace-with-at-least-32-different-random-characters
+EMAIL_MODE=preview
