@@ -139,14 +139,12 @@ async function deliverRecipientRequest(
       approveUrl: `${env.APP_BASE_URL}/respond/${approveToken}`,
       declineUrl: `${env.APP_BASE_URL}/respond/${declineToken}`,
       reportUrl: `${env.APP_BASE_URL}/report/${reportToken}`,
-      safetyUrl: `${env.APP_BASE_URL}/safety`,
-      privacyUrl: `${env.APP_BASE_URL}/privacy`,
     });
     const messageId = await sendMessage(env, {
       requestId: row.id,
       kind: "recipient_request",
       to: recipientEmail,
-      from: env.EMAIL_FROM_REQUESTS,
+      from: env.EMAIL_FROM,
       content,
     });
     await completeRecipientDelivery(env.DB, row.id, messageId, Date.now());
@@ -185,7 +183,7 @@ async function deliverSenderResult(
       requestId: row.id,
       kind: decision === "approved" ? "approval_certificate" : "decline_notice",
       to: senderEmail,
-      from: env.EMAIL_FROM_CERTIFICATES,
+      from: env.EMAIL_FROM,
       content,
     });
     await completeResultDelivery(env.DB, row.id, messageId, Date.now());
@@ -343,7 +341,7 @@ app.post("/api/requests", async (context) => {
       requestId: id,
       kind: "sender_verification",
       to: parsed.value.senderEmail,
-      from: context.env.EMAIL_FROM_REQUESTS,
+      from: context.env.EMAIL_FROM,
       content: verification,
     });
   } catch (error) {

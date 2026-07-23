@@ -17,8 +17,6 @@ interface RecipientEmailLinks {
   approveUrl: string;
   declineUrl: string;
   reportUrl: string;
-  safetyUrl: string;
-  privacyUrl: string;
 }
 
 function escapeHtml(value: string): string {
@@ -113,7 +111,7 @@ export function senderVerificationEmail(
   data: RequestEmailData,
   verifyUrl: string,
 ): EmailContent {
-  const subject = "Confirm your Permission Granted request";
+  const subject = "Confirm the request you created on permissiongranted.app";
   const preheader = "Confirm your address before the request is sent.";
   const body = `
     <tr>
@@ -153,14 +151,14 @@ export function recipientRequestEmail(
   data: RequestEmailData,
   links: RecipientEmailLinks,
 ): EmailContent {
-  const subject = `${data.requesterName} sent you a Permission Granted request`;
-  const preheader = `Approve or decline a playful request from ${data.requesterName}.`;
+  const subject = `${data.requesterName} sent you a request via permissiongranted.app`;
+  const preheader = `A one-off playful request from ${data.requesterName}. No account is required.`;
   const body = `
     <tr>
       <td style="padding:12px 44px 32px;">
-        <div style="text-align:center;color:#667078;font-family:'IBM Plex Mono',Consolas,monospace;font-size:11px;letter-spacing:1.5px;">DOMESTIC APPROVAL REQUEST · ${escapeHtml(data.publicId)}</div>
-        <h1 style="margin:18px 0 10px;text-align:center;font-family:Georgia,'Times New Roman',serif;font-size:36px;line-height:1.15;font-weight:500;">A request has landed on your desk.</h1>
-        <p style="margin:0 auto 26px;max-width:520px;text-align:center;color:#667078;font-size:15px;line-height:1.6;">${escapeHtml(data.requesterName)} used Permission Granted to send you this playful request.</p>
+        <div style="text-align:center;color:#667078;font-family:'IBM Plex Mono',Consolas,monospace;font-size:11px;letter-spacing:1.5px;">PLAYFUL REQUEST · ${escapeHtml(data.publicId)}</div>
+        <h1 style="margin:18px 0 10px;text-align:center;font-family:Georgia,'Times New Roman',serif;font-size:36px;line-height:1.15;font-weight:500;">${escapeHtml(data.requesterName)} sent you a request.</h1>
+        <p style="margin:0 auto 26px;max-width:520px;text-align:center;color:#667078;font-size:15px;line-height:1.6;">${escapeHtml(data.requesterName)} entered your email address on permissiongranted.app to send this one-off playful request. You do not need an account, and taking no action is fine.</p>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #cfc7b8;">${requestRows(data)}</table>
         <div style="margin-top:24px;color:#1c2933;font-family:'IBM Plex Mono',Consolas,monospace;font-size:11px;letter-spacing:1.5px;">YOUR DECISION</div>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:10px;">
@@ -176,9 +174,7 @@ export function recipientRequestEmail(
         <p style="margin:18px 0 24px;text-align:center;color:#667078;font-size:12px;line-height:1.6;">You’ll confirm your choice on permissiongranted.app. Clicking this email does not record a decision.</p>
         <div style="padding-top:20px;border-top:1px solid #cfc7b8;text-align:center;color:#667078;font-size:12px;line-height:1.7;">
           This is an unofficial, playful request—not legal consent or a message from an employer, government, or another service.<br>
-          <a href="${escapeHtml(links.reportUrl)}" style="color:#285c52;">Report or block</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-          <a href="${escapeHtml(links.safetyUrl)}" style="color:#285c52;">Safety</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-          <a href="${escapeHtml(links.privacyUrl)}" style="color:#285c52;">Privacy</a>
+          If you did not expect it, you can ignore it or <a href="${escapeHtml(links.reportUrl)}" style="color:#285c52;">report and block the request</a>.
         </div>
       </td>
     </tr>`;
@@ -188,7 +184,8 @@ export function recipientRequestEmail(
     html: emailShell(preheader, body),
     text: `${subject}
 
-${data.requesterName} used Permission Granted to send you this playful request.
+${data.requesterName} entered your email address on permissiongranted.app to send this one-off playful request.
+You do not need an account, and taking no action is fine.
 
 Request ID: ${data.publicId}
 From: ${data.requesterName}
@@ -203,9 +200,8 @@ Decline (you will confirm on the website):
 ${links.declineUrl}
 
 Clicking either email link does not record a decision.
-Report or block: ${links.reportUrl}
-Safety: ${links.safetyUrl}
-Privacy: ${links.privacyUrl}`,
+If you did not expect this request, ignore it or report and block it:
+${links.reportUrl}`,
   };
 }
 
@@ -214,7 +210,7 @@ export function approvalCertificateEmail(
   decidedAt: number,
   manageUrl: string,
 ): EmailContent {
-  const subject = `${data.recipientName} approved your permission request`;
+  const subject = `${data.recipientName} approved your request on permissiongranted.app`;
   const preheader = "Permission granted. The record is now officially-ish complete.";
   const body = `
     <tr>
@@ -269,7 +265,7 @@ export function declineNoticeEmail(
   decidedAt: number,
   manageUrl: string,
 ): EmailContent {
-  const subject = `${data.recipientName} declined your permission request`;
+  const subject = `${data.recipientName} declined your request on permissiongranted.app`;
   const preheader = "A verdict has been recorded.";
   const body = `
     <tr>

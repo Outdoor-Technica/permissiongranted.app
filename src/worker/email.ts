@@ -46,6 +46,10 @@ export async function sendMessage(
     subject: options.content.subject,
     html: options.content.html,
     text: options.content.text,
+    headers: {
+      "Auto-Submitted": "auto-generated",
+      "X-Entity-Ref-ID": options.requestId,
+    },
   });
   return response.messageId;
 }

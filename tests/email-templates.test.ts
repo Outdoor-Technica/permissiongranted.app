@@ -19,12 +19,10 @@ describe("transactional email templates", () => {
       approveUrl: "https://permissiongranted.app/respond/approve-token",
       declineUrl: "https://permissiongranted.app/respond/decline-token",
       reportUrl: "https://permissiongranted.app/report/report-token",
-      safetyUrl: "https://permissiongranted.app/safety",
-      privacyUrl: "https://permissiongranted.app/privacy",
     });
 
     expect(email.subject).toBe(
-      "Alex sent you a Permission Granted request",
+      "Alex sent you a request via permissiongranted.app",
     );
     expect(email.html).toContain(">✓&nbsp; Approve</a>");
     expect(email.html).toContain(">×&nbsp; Decline</a>");
@@ -46,8 +44,6 @@ describe("transactional email templates", () => {
         approveUrl: "https://permissiongranted.app/respond/a",
         declineUrl: "https://permissiongranted.app/respond/d",
         reportUrl: "https://permissiongranted.app/report/r",
-        safetyUrl: "https://permissiongranted.app/safety",
-        privacyUrl: "https://permissiongranted.app/privacy",
       },
     );
 
@@ -62,7 +58,9 @@ describe("transactional email templates", () => {
       "https://permissiongranted.app/manage/manage-token",
     );
 
-    expect(email.subject).toBe("Sam approved your permission request");
+    expect(email.subject).toBe(
+      "Sam approved your request on permissiongranted.app",
+    );
     expect(email.html).toContain("CERTIFICATE OF APPROVAL");
     expect(email.html).toContain("PERMISSION GRANTED");
     expect(email.html).toContain("No legal force whatsoever.");

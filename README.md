@@ -62,10 +62,9 @@ The initial deployment used Wrangler automatic D1 provisioning. Remote migration
 
 ## Email identities
 
-- Request and verification mail: `requests@notify.permissiongranted.app`
-- Certificate and verdict mail: `certificates@notify.permissiongranted.app`
+- All transactional mail: `Permission Granted <notify@permissiongranted.app>`
 
-Both are restricted in the Worker binding. Every message has matching HTML and plain-text bodies, honest subject lines, no remote decorative images, no tracking pixel, and full `permissiongranted.app` links.
+The address is restricted in the Worker binding. Every message has matching HTML and plain-text bodies, honest subject lines, no remote decorative images, no tracking pixel, and full `permissiongranted.app` links.
 
 ## Security model
 

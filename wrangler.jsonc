@@ -27,16 +27,14 @@
     {
       "name": "EMAIL",
       "allowed_sender_addresses": [
-        "requests@notify.permissiongranted.app",
-        "certificates@notify.permissiongranted.app"
+        "notify@permissiongranted.app"
       ]
     }
   ],
   "vars": {
     "APP_BASE_URL": "https://permissiongranted.app",
     "ALLOWED_HOSTNAME": "permissiongranted.app",
-    "EMAIL_FROM_REQUESTS": "requests@notify.permissiongranted.app",
-    "EMAIL_FROM_CERTIFICATES": "certificates@notify.permissiongranted.app",
+    "EMAIL_FROM": "notify@permissiongranted.app",
     "EMAIL_MODE": "send",
     "ENVIRONMENT": "production",
     "REQUEST_TTL_DAYS": "30",
