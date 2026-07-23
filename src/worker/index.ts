@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { LEGAL_VERSION } from "../shared/legal";
 import type { Context } from "hono";
 import type { Decision } from "../shared/contracts";
 import {
@@ -319,6 +320,9 @@ app.post("/api/requests", async (context) => {
     recipientName: parsed.value.recipientName,
     requestTitle: parsed.value.requestTitle,
     justification: parsed.value.justification,
+    termsVersion: LEGAL_VERSION,
+    privacyVersion: LEGAL_VERSION,
+    termsAcceptedAt: now,
     createdAt: now,
     expiresAt,
   });

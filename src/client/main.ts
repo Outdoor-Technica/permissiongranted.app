@@ -9,6 +9,13 @@ import type {
   ConfirmationResponse,
   PublicRequest,
 } from "../shared/contracts";
+import {
+  cookieNotice,
+  LEGAL_VERSION,
+  type LegalDocument,
+  privacyNotice,
+  termsOfService,
+} from "./legal-content";
 import { hasTurnstileRender } from "./turnstile-loader";
 import "./styles.css";
 
@@ -90,6 +97,7 @@ function footer(): string {
         <a href="/safety" data-link>Safety</a>
         <a href="/privacy" data-link>Privacy</a>
         <a href="/terms" data-link>Terms</a>
+        <a href="/cookies" data-link>Cookies</a>
       </div>
     </footer>`;
 }
@@ -283,12 +291,12 @@ async function renderCreate(): Promise<void> {
             <fieldset>
               <legend><span>04</span> Delivery and verification</legend>
               <label>Your email<input name="senderEmail" type="email" autocomplete="email" maxlength="254" required placeholder="alex@example.com"><span class="field-note">We verify you before emailing Sam.</span></label>
-              <label class="check-label"><input name="acceptableUseAccepted" type="checkbox" required><span>I’ll send this only to someone who can reasonably expect it from me.</span></label>
+              <label class="check-label"><input name="acceptableUseAccepted" type="checkbox" required><span>I’m 18 or over, agree to the <a href="/terms" target="_blank">Terms</a>, acknowledge the <a href="/privacy" target="_blank">Privacy Notice</a>, and will send this only to someone who can reasonably expect it from me.</span></label>
               <div id="turnstile" class="turnstile-wrap" aria-label="Anti-bot check"></div>
             </fieldset>
             <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
             <button class="button button--primary button--wide" type="submit">Email my verification link</button>
-            <p class="privacy-note">⌑ Your draft stays private. No email open tracking.</p>
+            <p class="privacy-note">⌑ We use these details to verify you, deliver the request, record the outcome, and prevent abuse. Requests expire after 30 days; decided records are kept for up to 90 days. No email open tracking. <a href="/privacy" target="_blank">Full privacy notice</a>.</p>
           </form>
         </section>
         <aside class="live-preview" aria-label="Live request preview">
@@ -578,7 +586,7 @@ async function renderRespond(token: string): Promise<void> {
               <span>YOU SELECTED</span>
               <strong>${isApprove ? "✓ APPROVE" : "× DECLINE"}</strong>
             </div>
-            <p class="irreversible-note">This decision cannot be changed in the MVP.</p>
+            <p class="irreversible-note">Once recorded, this decision cannot be changed.</p>
             <div id="private-status" class="form-status" role="status" aria-live="polite"></div>
             <button id="record-decision" class="button ${isApprove ? "button--approve" : "button--decline"} button--wide">
               ${isApprove ? "Record approval" : "Record decline"}
@@ -778,6 +786,48 @@ function renderEditorialPage(
   );
 }
 
+function renderLegalPage(document: LegalDocument): void {
+  const navigation = document.sections
+    .map(
+      (section) =>
+        `<li><a href="#${escapeHtml(section.id)}">${escapeHtml(section.title)}</a></li>`,
+    )
+    .join("");
+  const sections = document.sections
+    .map(
+      (section) =>
+        `<section id="${escapeHtml(section.id)}" class="legal-section"><h2>${escapeHtml(section.title)}</h2>${section.body}</section>`,
+    )
+    .join("");
+
+  setPage(
+    `<div class="page-shell">
+      ${header()}
+      <main id="main" class="legal-page">
+        <header class="legal-hero">
+          <p class="eyebrow">${escapeHtml(document.eyebrow)}</p>
+          <h1>${escapeHtml(document.title)}</h1>
+          <p>${escapeHtml(document.summary)}</p>
+          <dl class="legal-meta">
+            <div><dt>Effective</dt><dd>${escapeHtml(LEGAL_VERSION)}</dd></div>
+            <div><dt>Operator</dt><dd>Aryan Alipour trading as Permission Granted</dd></div>
+            <div><dt>Contact</dt><dd><a href="mailto:privacy@permissiongranted.app">privacy@permissiongranted.app</a></dd></div>
+          </dl>
+        </header>
+        <div class="legal-layout">
+          <aside class="legal-index" aria-label="On this page">
+            <span>ON THIS PAGE</span>
+            <ol>${navigation}</ol>
+          </aside>
+          <article class="legal-copy">${sections}</article>
+        </div>
+      </main>
+      ${footer()}
+    </div>`,
+    document.pageTitle,
+  );
+}
+
 function renderRoute(): void {
   const path = window.location.pathname.replace(/\/+$/u, "") || "/";
   const segments = path.split("/").filter(Boolean);
@@ -810,20 +860,14 @@ function renderRoute(): void {
     renderEditorialPage(
       "Keep the joke kind.",
       "SAFETY",
-      `<h2>Expected recipients only</h2><p>Send requests only to someone who knows you and can reasonably expect a playful message from you.</p><h2>Never authority</h2><p>Permission Granted is not affiliated with Google, a government, an employer, or a legal service. Decisions recorded here are not legal consent.</p><h2>Recipient control</h2><p>No email click records a decision. Decline is never hidden. Recipients can report and block a request from the original email.</p><h2>Private by design</h2><p>Requests are not public, and the MVP does not use email-open tracking.</p>`,
+      `<h2>Expected recipients only</h2><p>Send requests only to someone who knows you and can reasonably expect a playful message from you.</p><h2>Never authority</h2><p>Permission Granted is not affiliated with Google, a government, an employer, or a legal service. Decisions recorded here are not legal consent.</p><h2>Recipient control</h2><p>No email click records a decision. Decline is never hidden. Recipients can report and block a request from the original email.</p><h2>Private by design</h2><p>Requests are not public, and the service does not use email-open tracking.</p>`,
     );
   } else if (path === "/privacy") {
-    renderEditorialPage(
-      "Small files, short lives.",
-      "PRIVACY",
-      `<p>The MVP stores request text, names, encrypted sender and recipient addresses, and the explicit decision. Capability links are protected with hashes, while recoverable copies needed for transactional retries are encrypted.</p><p>Requests expire after 30 days by default. Final records are removed after the configured retention window. We do not publish requests or record whether an email was opened.</p><p>Before public launch, this summary must be replaced with a complete UK GDPR privacy notice naming the controller, processors, lawful basis, retention periods, and contact route.</p>`,
-    );
+    renderLegalPage(privacyNotice);
   } else if (path === "/terms") {
-    renderEditorialPage(
-      "Unofficial terms.",
-      "ACCEPTABLE USE",
-      `<p>Do not use Permission Granted for threats, harassment, impersonation, fraud, doxxing, unlawful content, sexual content involving minors, or any decision requiring legally valid consent.</p><p>Requests may be disabled, retained for abuse review, or removed to protect recipients and service deliverability.</p><p>This is an implementation placeholder and requires legal review before public launch.</p>`,
-    );
+    renderLegalPage(termsOfService);
+  } else if (path === "/cookies") {
+    renderLegalPage(cookieNotice);
   } else {
     privateError("Page not found.", "The file you requested does not exist.");
   }

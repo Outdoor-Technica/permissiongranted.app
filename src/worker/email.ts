@@ -43,6 +43,10 @@ export async function sendMessage(
   const response = await env.EMAIL.send({
     to: options.to,
     from: { email: options.from, name: "Permission Granted" },
+    replyTo: {
+      email: env.SUPPORT_EMAIL,
+      name: "Permission Granted Support",
+    },
     subject: options.content.subject,
     html: options.content.html,
     text: options.content.text,

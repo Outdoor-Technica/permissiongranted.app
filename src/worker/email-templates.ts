@@ -79,6 +79,7 @@ function emailShell(preheader: string, body: string): string {
           <tr>
             <td style="padding:20px 44px 32px;text-align:center;color:#667078;font-size:12px;line-height:1.6;border-top:1px solid #cfc7b8;">
               Permission Granted · <a href="https://permissiongranted.app" style="color:#285c52;">permissiongranted.app</a>
+              &nbsp;&nbsp;·&nbsp;&nbsp; <a href="https://permissiongranted.app/privacy" style="color:#285c52;">How we use your data</a>
             </td>
           </tr>
         </table>

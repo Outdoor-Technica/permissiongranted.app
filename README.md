@@ -45,7 +45,8 @@ The production application is deployed at `https://permissiongranted.app`.
 
 - Worker: `permission-granted`
 - D1 database: `permission-granted`
-- Email Sending domain: `notify.permissiongranted.app`
+- Email Sending domain: `permissiongranted.app`
+- Email Routing contacts: `privacy@permissiongranted.app` and `support@permissiongranted.app`
 - Turnstile widget: restricted to `permissiongranted.app`
 - Scheduled cleanup: `17 3 * * *`
 
@@ -65,6 +66,7 @@ The initial deployment used Wrangler automatic D1 provisioning. Remote migration
 - All transactional mail: `Permission Granted <notify@permissiongranted.app>`
 
 The address is restricted in the Worker binding. Every message has matching HTML and plain-text bodies, honest subject lines, no remote decorative images, no tracking pixel, and full `permissiongranted.app` links.
+Replies are directed to the routed `support@permissiongranted.app` mailbox.
 
 ## Security model
 
@@ -79,6 +81,7 @@ The address is restricted in the Worker binding. Every message has matching HTML
 - Private pages and API responses are `no-store`, `no-referrer`, and `noindex`.
 - Request text is escaped in both the SPA and email templates.
 - Capability tokens, names, request text, and email addresses are excluded from logs.
+- Terms and Privacy Notice version `2026-07-23` is recorded when a sender submits a request.
 
 ## Operational notes
 
@@ -86,7 +89,9 @@ The address is restricted in the Worker binding. Every message has matching HTML
 - API-level email failures do not roll back a recorded decision.
 - The sender management page exposes explicit retries for failed recipient or result email.
 - Accepted-message retries, bounce handling, and suppression lists are handled by Cloudflare Email Service.
-- The bundled privacy and terms pages are product placeholders and require legal review before launch.
+- The site publishes a UK GDPR privacy notice, Terms of Service, and strictly necessary Cookie Notice.
+- Senders receive a just-in-time privacy summary and explicitly accept the current Terms.
+- The first recipient email links to the Privacy Notice.
 
 ## Useful commands
 

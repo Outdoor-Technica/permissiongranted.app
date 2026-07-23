@@ -33,6 +33,9 @@ export interface RequestRow {
   expires_at: number;
   decided_at: number | null;
   disabled_at: number | null;
+  terms_version: string | null;
+  privacy_version: string | null;
+  terms_accepted_at: number | null;
 }
 
 export interface InsertRequest {
@@ -54,6 +57,9 @@ export interface InsertRequest {
   recipientName: string;
   requestTitle: string;
   justification: string;
+  termsVersion: string;
+  privacyVersion: string;
+  termsAcceptedAt: number;
   createdAt: number;
   expiresAt: number;
 }
@@ -68,7 +74,8 @@ const SELECT_COLUMNS = `
   recipient_email_status, recipient_email_message_id, recipient_email_error_code,
   recipient_email_sent_at, sender_result_email_status,
   sender_result_email_message_id, sender_result_email_error_code,
-  sender_result_email_sent_at, created_at, expires_at, decided_at, disabled_at
+  sender_result_email_sent_at, created_at, expires_at, decided_at, disabled_at,
+  terms_version, privacy_version, terms_accepted_at
 `;
 
 export function toPublicRequest(row: RequestRow): PublicRequest {
@@ -93,8 +100,9 @@ export async function insertRequest(db: D1Database, input: InsertRequest): Promi
         decline_token_ciphertext, report_token_hash, report_token_ciphertext,
         sender_email_ciphertext, sender_email_hmac, recipient_email_ciphertext,
         recipient_email_hmac, requester_name, recipient_name, request_title,
-        justification, status, created_at, expires_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        justification, status, created_at, expires_at, terms_version,
+        privacy_version, terms_accepted_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       input.id,
@@ -118,6 +126,9 @@ export async function insertRequest(db: D1Database, input: InsertRequest): Promi
       "awaiting_sender_verification",
       input.createdAt,
       input.expiresAt,
+      input.termsVersion,
+      input.privacyVersion,
+      input.termsAcceptedAt,
     )
     .run();
 }

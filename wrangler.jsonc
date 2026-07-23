@@ -35,6 +35,7 @@
     "APP_BASE_URL": "https://permissiongranted.app",
     "ALLOWED_HOSTNAME": "permissiongranted.app",
     "EMAIL_FROM": "notify@permissiongranted.app",
+    "SUPPORT_EMAIL": "support@permissiongranted.app",
     "EMAIL_MODE": "send",
     "ENVIRONMENT": "production",
     "REQUEST_TTL_DAYS": "30",

@@ -32,6 +32,9 @@ describe("transactional email templates", () => {
     expect(email.text).toContain(
       "Clicking either email link does not record a decision.",
     );
+    expect(email.html).toContain(
+      "https://permissiongranted.app/privacy",
+    );
   });
 
   it("escapes user content in HTML", () => {
