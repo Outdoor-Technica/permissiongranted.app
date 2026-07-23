@@ -586,7 +586,7 @@ app.post("/api/manage/:token/disable", async (context) => {
     return apiError(context, 403, "confirmation_expired", "Reload the page and try again.");
   }
   if (row.status === "approved" || row.status === "declined") {
-    return apiError(context, 409, "already_decided", "A recorded decision cannot be disabled.");
+    return apiError(context, 409, "already_decided", "A decided request cannot be disabled.");
   }
   await context.env.DB.prepare(
     "UPDATE requests SET status = 'disabled', disabled_at = ? WHERE id = ?",
@@ -662,7 +662,7 @@ app.post("/api/respond/:token", async (context) => {
   if (!recorded) {
     const current = await getByActionHash(context.env.DB, tokenHash);
     return current === null
-      ? apiError(context, 409, "decision_conflict", "A decision has already been recorded.")
+      ? apiError(context, 409, "decision_conflict", "This request already has a decision.")
       : context.json({
           request: toPublicRequest(current.row),
           senderResultEmailStatus: current.row.sender_result_email_status,

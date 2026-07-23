@@ -565,9 +565,9 @@ function renderDecisionResult(
       ${header(true)}
       <main id="main" class="private-main">
         <section class="private-intro">
-          <p class="eyebrow">DECISION RECORDED</p>
+          <p class="eyebrow">VERDICT SENT</p>
           <h1>${approved ? "Permission granted." : "Request declined."}</h1>
-          <p>${approved ? "The highly unofficial certificate is on its way." : "No explanation was required."}</p>
+          <p>${approved ? "The highly unofficial certificate is on its way to the sender." : "The sender is being notified. No explanation was required."}</p>
         </section>
         <div class="private-document">
           ${requestSheet(request, {
@@ -576,7 +576,7 @@ function renderDecisionResult(
           })}
           <div class="notification-line ${emailStatus === "failed" ? "notification-line--error" : ""}">
             <span aria-hidden="true">${emailStatus === "failed" ? "!" : "✓"}</span>
-            ${emailStatus === "failed" ? "The decision was recorded, but the sender email could not be sent." : "Decision recorded. The sender has been notified."}
+            ${emailStatus === "failed" ? "Your choice went through, but the sender email could not be sent." : "The sender has been notified by email."}
           </div>
           <a class="text-link" href="/create" data-link><span class="text-link__label">Create your own request</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
         </div>
@@ -600,26 +600,28 @@ async function renderRespond(token: string): Promise<void> {
       throw new Error("The proposed decision is missing.");
     }
     const isApprove = decision === "approved";
+    const decisionLabel = isApprove ? "Approve" : "Decline";
+    const actionLabel = `${decisionLabel} and notify sender`;
     setPage(
       `
       <div class="page-shell">
         ${header(true)}
         <main id="main" class="private-main">
           <section class="private-intro">
-            <p class="eyebrow">ACTION REQUIRED</p>
-            <h1>Confirm your decision.</h1>
-            <p>No decision has been recorded from the email click.</p>
+            <p class="eyebrow">FINAL CHECK</p>
+            <h1>${decisionLabel} and notify the sender?</h1>
+            <p>The email link opened this private preview. Nothing has been sent yet.</p>
           </section>
           <div class="private-document">
-            ${requestSheet(request, { status: "PROPOSED DECISION" })}
+            ${requestSheet(request, { status: "AWAITING YOUR CHOICE" })}
             <div class="decision-selection decision-selection--${isApprove ? "approved" : "declined"}">
-              <span>YOU SELECTED</span>
+              <span>YOUR CHOICE</span>
               <strong>${isApprove ? "✓ APPROVE" : "× DECLINE"}</strong>
             </div>
-            <p class="irreversible-note">Once recorded, this decision cannot be changed.</p>
+            <p class="irreversible-note">This will email ${escapeHtml(request.requesterName)} immediately and cannot be changed.</p>
             <div id="private-status" class="form-status" role="status" aria-live="polite"></div>
-            <button id="record-decision" class="button ${isApprove ? "button--approve" : "button--decline"} button--wide">
-              ${isApprove ? "Record approval" : "Record decline"}
+            <button id="send-decision" class="button ${isApprove ? "button--approve" : "button--decline"} button--wide">
+              ${escapeHtml(actionLabel)}
             </button>
             <a class="text-link" href="/" data-link><span class="text-link__label">Leave without deciding</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
           </div>
@@ -628,11 +630,11 @@ async function renderRespond(token: string): Promise<void> {
       `Confirm ${isApprove ? "approval" : "decline"}`,
     );
 
-    const button = document.querySelector<HTMLButtonElement>("#record-decision");
+    const button = document.querySelector<HTMLButtonElement>("#send-decision");
     button?.addEventListener("click", async () => {
       const status = document.querySelector<HTMLDivElement>("#private-status");
       button.disabled = true;
-      button.textContent = "Recording decision…";
+      button.textContent = "Notifying sender…";
       try {
         const result = await api<ConfirmationResponse>(`/api/respond/${token}`, {
           method: "POST",
@@ -641,11 +643,11 @@ async function renderRespond(token: string): Promise<void> {
         renderDecisionResult(result.request, result.senderResultEmailStatus);
       } catch (error) {
         if (status !== null) {
-          status.textContent = error instanceof Error ? error.message : "The decision could not be recorded.";
+          status.textContent = error instanceof Error ? error.message : "The sender could not be notified.";
           status.className = "form-status form-status--error";
         }
         button.disabled = false;
-        button.textContent = isApprove ? "Record approval" : "Record decline";
+        button.textContent = actionLabel;
       }
     });
   } catch (error) {
@@ -878,7 +880,7 @@ function renderRoute(): void {
     renderEditorialPage(
       "Three emails. One verdict.",
       "HOW IT WORKS",
-      `<h2>1. Draft and verify</h2><p>You write the request and verify your own address. Nothing reaches the recipient before that confirmation.</p><h2>2. They decide</h2><p>The recipient gets an HTML email with equally prominent Approve and Decline actions. Either action opens a web confirmation page; email scanners cannot decide for them.</p><h2>3. The record arrives</h2><p>An approval returns as a certificate-style HTML email. A decline returns as a simple verdict notice. Neither outcome has legal force.</p>`,
+      `<h2>1. Draft and verify</h2><p>You write the request and verify your own address. Nothing reaches the recipient before that confirmation.</p><h2>2. They decide</h2><p>The recipient gets an HTML email with equally prominent Approve and Decline actions. Either link opens a safe final check; their choice then immediately emails the sender.</p><h2>3. The verdict arrives</h2><p>An approval returns as a certificate-style HTML email. A decline returns as a simple verdict notice. Neither outcome has legal force.</p>`,
     );
   } else if (path === "/templates") {
     renderEditorialPage(
