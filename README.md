@@ -1,104 +1,117 @@
-# Permission Granted
+<p align="center">
+  <img src="./public/favicon.svg" width="88" height="88" alt="Permission Granted seal">
+</p>
 
-A playful, email-first permission-request service for `permissiongranted.app`.
+<h1 align="center">Permission Granted</h1>
 
-The sender drafts a request and verifies their address. The recipient receives a branded HTML email with equal **Approve** and **Decline** actions. Either action opens a web confirmation page; only the explicit confirmation POST records the decision. Approval returns to the sender as an HTML certificate.
+<p align="center">
+  A playful, email-first way to put a request in writing and await the verdict.
+  <br>
+  <a href="https://permissiongranted.app"><strong>Visit the live website</strong></a>
+  ·
+  <a href="./CONTRIBUTING.md">Contribute</a>
+  ·
+  <a href="./SECURITY.md">Security</a>
+  ·
+  <a href="./LICENSE">MIT License</a>
+</p>
 
-## Architecture
+## What it does
 
-- Cloudflare Worker for the API and scheduled retention cleanup
-- Workers Static Assets for the Vite-built SPA
-- D1 for requests, one-time decisions, delivery state, reports, and local email previews
-- Cloudflare Email Sending Worker binding for transactional HTML and text email
-- Turnstile on request creation
-- No Queue: email is sent directly by the verification or decision request
+A sender drafts a light-hearted permission request and verifies their own email address. The recipient receives a branded HTML email with equally prominent **Approve** and **Decline** actions. Either action opens a confirmation page, and only an explicit confirmation records the decision.
 
-## Local development
+If the request is approved, the sender receives a certificate-style HTML email. A decline returns a straightforward verdict notice. Requests are private, have no legal force, and never use email-open tracking.
+
+## Highlights
+
+- Sender verification before the recipient is contacted
+- Separate, random capabilities for approval, decline, reporting, and management
+- Email links that never change state on `GET`
+- One-time, conditional decisions
+- HTML and plain-text transactional email
+- Encrypted email addresses and retry capabilities in D1
+- Turnstile abuse protection and privacy-preserving rate limits
+- Scheduled request retention cleanup
+- Local email previews that do not send real messages
+- Accessible, responsive “Domestic Dossier” interface
+
+## Built with
+
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Cloudflare D1](https://developers.cloudflare.com/d1/)
+- [Cloudflare Email Service](https://developers.cloudflare.com/email-service/)
+- [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/)
+- [Hono](https://hono.dev/)
+- [Vite](https://vite.dev/)
+- TypeScript and Vitest
+
+## Run it locally
 
 Requirements:
 
 - Node.js 20.19 or newer
 - npm
 
-Set up:
-
-```powershell
+```sh
+git clone <your-fork-url>
+cd permissiongranted.app
 npm install
-.\scripts\setup-local.ps1
+npm run setup
 npm run db:local
 npm run dev
 ```
 
 Open the URL Wrangler prints, normally `http://localhost:8787`.
 
-Local setup uses Cloudflare’s published Turnstile test pair and `EMAIL_MODE=preview`. Transactional messages are written to the local `email_previews` D1 table instead of leaving the machine. After creating a request, the UI exposes the local verification preview link.
+`npm run setup` creates an ignored `.dev.vars` file with random local-only keys, Cloudflare’s published Turnstile test secret, and `EMAIL_MODE=preview`. In preview mode, messages are stored in the local `email_previews` D1 table and never leave your machine.
 
-Run the full local verification suite:
+Run the complete verification suite with:
 
-```powershell
+```sh
 npm run check
 ```
 
-## Production deployment
+## How it works
 
-The production application is deployed at `https://permissiongranted.app`.
-
-- Worker: `permission-granted`
-- D1 database: `permission-granted`
-- Email Sending domain: `permissiongranted.app`
-- Email Routing contacts: `privacy@permissiongranted.app` and `support@permissiongranted.app`, forwarded to `aryan@outdoortechnica.com`
-- Turnstile widget: restricted to `permissiongranted.app`
-- Scheduled cleanup: `17 3 * * *`
-
-The public Turnstile site key is checked into `wrangler.jsonc`. The Turnstile secret, encryption key, and two independent HMAC keys exist only as encrypted Cloudflare Worker secrets. A Windows DPAPI-protected recovery copy is stored outside the repository at `%USERPROFILE%\.permissiongranted-secrets.dpapi`.
-
-To deploy a subsequent version and apply any new D1 migrations:
-
-```powershell
-npm run deploy
-npm run db:remote
+```text
+Sender drafts request
+        │
+        ▼
+Sender verifies email ──► Recipient receives request
+                                  │
+                     ┌────────────┴────────────┐
+                     ▼                         ▼
+                Approve page              Decline page
+                     │                         │
+                     └────────────┬────────────┘
+                                  ▼
+                       Explicit confirmation
+                                  │
+                                  ▼
+                        Sender receives result
 ```
 
-The initial deployment used Wrangler automatic D1 provisioning. Remote migration commands resolve the configured `permission-granted` database by name.
+The email action pages deliberately separate navigation from mutation: automated link scanners can open an email URL, but they cannot record a decision.
 
-## Email identities
+## Documentation
 
-- All transactional mail: `Permission Granted <notify@permissiongranted.app>`
+- [Architecture](./docs/architecture.md)
+- [Deployment guide](./docs/deployment.md)
+- [Security model](./docs/security.md)
+- [Project wiki](../../wiki)
 
-The address is restricted in the Worker binding. Every message has matching HTML and plain-text bodies, honest subject lines, no remote decorative images, no tracking pixel, and full `permissiongranted.app` links.
-Replies are directed to the routed `support@permissiongranted.app` mailbox.
+## Production service
 
-## Security model
+The public service at [permissiongranted.app](https://permissiongranted.app) is operated by Outdoor Technica Ltd. Its production infrastructure, email domains, legal notices, and data-controller obligations belong to that deployment and do not automatically apply to forks.
 
-- Sender verification happens before recipient delivery.
-- Email actions use separate 256-bit random capability tokens.
-- D1 stores token hashes for lookup and AES-GCM-encrypted token copies solely so a failed transactional email can be retried.
-- Sender and recipient addresses are encrypted with AES-GCM.
-- Keyed HMAC values support rate limiting without storing searchable plaintext addresses.
-- Initial email-link GET requests never change state.
-- Confirmation proofs expire after 15 minutes.
-- The decision update is conditional on `status = 'pending'`; only the winning request sends a result email.
-- Private pages and API responses are `no-store`, `no-referrer`, and `noindex`.
-- Request text is escaped in both the SPA and email templates.
-- Capability tokens, names, request text, and email addresses are excluded from logs.
-- Terms and Privacy Notice version `2026-07-23` is recorded when a sender submits a request.
+If you deploy a fork, use your own Cloudflare account, domain, D1 database, Turnstile widget, email identities, secrets, policies, and legal notices. Do not send unsolicited messages or present a fork as an official or legally binding permission service.
 
-## Operational notes
+## Contributing
 
-- The normal completed flow sends three emails.
-- API-level email failures do not roll back a recorded decision.
-- The sender management page exposes explicit retries for failed recipient or result email.
-- Accepted-message retries, bounce handling, and suppression lists are handled by Cloudflare Email Service.
-- The site publishes a UK GDPR privacy notice, Terms of Service, and strictly necessary Cookie Notice.
-- Senders receive a just-in-time privacy summary and explicitly accept the current Terms.
-- The first recipient email links to the Privacy Notice.
+Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request. For security vulnerabilities, follow [SECURITY.md](./SECURITY.md) instead of filing a public issue.
 
-## Useful commands
+## License
 
-```powershell
-npm run typecheck
-npm test
-npm run build
-npx wrangler deploy --dry-run
-npx wrangler tail --status error
-```
+The source code is available under the [MIT License](./LICENSE).
+
+The MIT License does not grant permission to use the Permission Granted name, logo, or other branding in a way that suggests endorsement by or affiliation with Outdoor Technica Ltd.

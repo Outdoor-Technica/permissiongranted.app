@@ -1,7 +1,10 @@
 {
   "name": "permissiongranted.app",
   "version": "0.1.0",
+  "description": "A playful, email-first permission request service built on Cloudflare Workers.",
   "private": true,
+  "license": "MIT",
+  "homepage": "https://permissiongranted.app",
   "type": "module",
   "scripts": {
     "build": "vite build",
@@ -12,6 +15,7 @@
     "deploy": "npm run build && wrangler deploy",
     "dev": "npm run build && wrangler dev --live-reload",
     "preview": "vite preview",
+    "setup": "node scripts/setup-local.mjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.client.json && tsc -p tsconfig.worker.json && tsc -p tsconfig.tools.json"
   },
