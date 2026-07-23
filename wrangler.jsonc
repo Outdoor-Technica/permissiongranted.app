@@ -40,7 +40,7 @@
     "EMAIL_MODE": "send",
     "ENVIRONMENT": "production",
     "REQUEST_TTL_DAYS": "30",
-    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAD8NAn3edXgX4-uK"
   },
   "secrets": {
     "required": [

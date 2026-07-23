@@ -39,44 +39,26 @@ Run the full local verification suite:
 npm run check
 ```
 
-## Production configuration
+## Production deployment
 
-The checked-in Wrangler configuration targets `permissiongranted.app` and uses automatic D1 provisioning. Before the first public deployment:
+The production application is deployed at `https://permissiongranted.app`.
 
-1. Ensure `permissiongranted.app` is active in the same Cloudflare account and uses Cloudflare DNS.
-2. Upgrade the account to Workers Paid; arbitrary Email Sending recipients require it.
-3. Onboard `notify.permissiongranted.app` under **Compute > Email Service > Email Sending**.
-4. Create a Turnstile widget restricted to `permissiongranted.app`.
-5. Replace the test `TURNSTILE_SITE_KEY` in `wrangler.jsonc` with the production site key.
-6. Set all four secrets interactively—never put production values in the repository.
+- Worker: `permission-granted`
+- D1 database: `permission-granted`
+- Email Sending domain: `notify.permissiongranted.app`
+- Turnstile widget: restricted to `permissiongranted.app`
+- Scheduled cleanup: `17 3 * * *`
 
-```powershell
-npx wrangler login
-npx wrangler email sending enable notify.permissiongranted.app
-npx wrangler secret put TURNSTILE_SECRET_KEY
-npx wrangler secret put DATA_ENCRYPTION_KEY
-npx wrangler secret put EMAIL_HMAC_KEY
-npx wrangler secret put CONFIRMATION_HMAC_KEY
-```
+The public Turnstile site key is checked into `wrangler.jsonc`. The Turnstile secret, encryption key, and two independent HMAC keys exist only as encrypted Cloudflare Worker secrets. A Windows DPAPI-protected recovery copy is stored outside the repository at `%USERPROFILE%\.permissiongranted-secrets.dpapi`.
 
-`DATA_ENCRYPTION_KEY` must be a base64-encoded 32-byte value. The HMAC secrets should be separate random values containing at least 32 characters.
-
-One PowerShell method for generating values locally without printing them into command history:
-
-```powershell
-$bytes = New-Object byte[] 32
-[System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
-[Convert]::ToBase64String($bytes)
-```
-
-Then deploy and apply the automatically provisioned D1 migration:
+To deploy a subsequent version and apply any new D1 migrations:
 
 ```powershell
 npm run deploy
 npm run db:remote
 ```
 
-Wrangler writes the provisioned D1 database ID back to `wrangler.jsonc`. Commit that configuration change after checking it.
+The initial deployment used Wrangler automatic D1 provisioning. Remote migration commands resolve the configured `permission-granted` database by name.
 
 ## Email identities
 
