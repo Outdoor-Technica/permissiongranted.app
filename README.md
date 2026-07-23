@@ -5,6 +5,9 @@
 <h1 align="center">Permission Granted</h1>
 
 <p align="center">
+  <a href="https://github.com/Outdoor-Technica/permissiongranted.app/actions/workflows/ci.yml"><img src="https://github.com/Outdoor-Technica/permissiongranted.app/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-285c52" alt="MIT License"></a>
+  <br>
   A playful, email-first way to put a request in writing and await the verdict.
   <br>
   <a href="https://permissiongranted.app"><strong>Visit the live website</strong></a>
