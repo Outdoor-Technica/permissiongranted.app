@@ -19,4 +19,14 @@ describe("Turnstile loader", () => {
     expect(hasTurnstileRender({ render: "pending" })).toBe(false);
     expect(hasTurnstileRender({ render: () => "widget-id" })).toBe(true);
   });
+
+  it("generates the Turnstile token only when the form is submitted", () => {
+    const source = readFileSync(
+      new URL("../src/client/main.ts", import.meta.url),
+      "utf8",
+    );
+
+    expect(source).toContain('execution: "execute"');
+    expect(source).toContain("turnstile.execute(widgetId)");
+  });
 });

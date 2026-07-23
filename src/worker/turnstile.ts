@@ -32,15 +32,37 @@ export async function verifyTurnstile(
     { method: "POST", body: formData },
   );
   if (!response.ok) {
+    console.warn(
+      JSON.stringify({
+        event: "turnstile_siteverify_http_error",
+        status: response.status,
+      }),
+    );
     return false;
   }
 
   const result: unknown = await response.json();
-  if (!isTurnstileResult(result) || !result.success) {
+  if (!isTurnstileResult(result)) {
+    console.warn(JSON.stringify({ event: "turnstile_siteverify_invalid_response" }));
+    return false;
+  }
+  if (!result.success) {
+    console.warn(
+      JSON.stringify({
+        event: "turnstile_validation_failed",
+        errorCodes: result["error-codes"] ?? [],
+      }),
+    );
     return false;
   }
 
   if (result.action !== undefined && result.action !== "create_request") {
+    console.warn(
+      JSON.stringify({
+        event: "turnstile_action_mismatch",
+        received: result.action,
+      }),
+    );
     return false;
   }
 
@@ -49,6 +71,12 @@ export async function verifyTurnstile(
     result.hostname !== undefined &&
     result.hostname !== env.ALLOWED_HOSTNAME
   ) {
+    console.warn(
+      JSON.stringify({
+        event: "turnstile_hostname_mismatch",
+        received: result.hostname,
+      }),
+    );
     return false;
   }
 

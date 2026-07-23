@@ -26,11 +26,14 @@ interface TurnstileApi {
       sitekey: string;
       action: string;
       theme: "light";
+      execution: "execute";
       callback: (token: string) => void;
       "expired-callback": () => void;
       "error-callback": () => void;
+      "timeout-callback": () => void;
     },
   ): string;
+  execute(widgetId: string): void;
   reset(widgetId: string): void;
 }
 
@@ -247,6 +250,7 @@ function createPreviewMarkup(values: {
 async function loadTurnstile(
   siteKey: string,
   onToken: (token: string) => void,
+  onFailure: (message: string) => void,
 ): Promise<string> {
   if (!hasTurnstileRender(window.turnstile)) {
     throw new Error("Anti-bot check is unavailable.");
@@ -255,9 +259,14 @@ async function loadTurnstile(
     sitekey: siteKey,
     action: "create_request",
     theme: "light",
+    execution: "execute",
     callback: onToken,
-    "expired-callback": () => onToken(""),
-    "error-callback": () => onToken(""),
+    "expired-callback": () =>
+      onFailure("The anti-bot check expired. Please submit the form again."),
+    "error-callback": () =>
+      onFailure("The anti-bot check could not be completed. Please try again."),
+    "timeout-callback": () =>
+      onFailure("The anti-bot check timed out. Please try again."),
   });
 }
 
@@ -324,14 +333,24 @@ async function renderCreate(): Promise<void> {
     return;
   }
 
-  let turnstileToken = "";
+  let turnstileWaiter: {
+    resolve: (token: string) => void;
+    reject: (error: Error) => void;
+  } | null = null;
   let turnstileWidgetId: string | null = null;
   try {
     const config = await api<{ turnstileSiteKey: string }>("/api/config");
     turnstileWidgetId = await loadTurnstile(
       config.turnstileSiteKey,
       (token) => {
-        turnstileToken = token;
+        const waiter = turnstileWaiter;
+        turnstileWaiter = null;
+        waiter?.resolve(token);
+      },
+      (message) => {
+        const waiter = turnstileWaiter;
+        turnstileWaiter = null;
+        waiter?.reject(new Error(message));
       },
     );
   } catch (error) {
@@ -350,6 +369,19 @@ async function renderCreate(): Promise<void> {
   };
   form.addEventListener("input", updatePreview);
 
+  const requestTurnstileToken = (): Promise<string> => {
+    const widgetId = turnstileWidgetId;
+    const turnstile = window.turnstile;
+    if (widgetId === null || turnstile === undefined) {
+      return Promise.reject(new Error("Anti-bot check is unavailable."));
+    }
+
+    return new Promise<string>((resolve, reject) => {
+      turnstileWaiter = { resolve, reject };
+      turnstile.execute(widgetId);
+    });
+  };
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     status.textContent = "";
@@ -357,19 +389,18 @@ async function renderCreate(): Promise<void> {
     if (!form.reportValidity()) {
       return;
     }
-    if (turnstileToken.length === 0) {
-      status.textContent = "Complete the anti-bot check.";
-      status.className = "form-status form-status--error";
-      return;
-    }
 
     const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     submit?.setAttribute("disabled", "");
     if (submit !== null) {
-      submit.textContent = "Preparing the file…";
+      submit.textContent = "Completing the anti-bot check…";
     }
     const data = new FormData(form);
     try {
+      const turnstileToken = await requestTurnstileToken();
+      if (submit !== null) {
+        submit.textContent = "Preparing the file…";
+      }
       const response = await api<{
         ok: boolean;
         senderEmailMasked: string;
@@ -397,7 +428,6 @@ async function renderCreate(): Promise<void> {
       }
       if (turnstileWidgetId !== null && window.turnstile !== undefined) {
         window.turnstile.reset(turnstileWidgetId);
-        turnstileToken = "";
       }
     }
   });
