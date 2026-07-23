@@ -101,6 +101,7 @@ function footer(): string {
         <a href="/privacy" data-link>Privacy</a>
         <a href="/terms" data-link>Terms</a>
         <a href="/cookies" data-link>Cookies</a>
+        <a href="https://github.com/Outdoor-Technica/permissiongranted.app" target="_blank" rel="noopener noreferrer" aria-label="Permission Granted source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>
       </div>
     </footer>`;
 }
