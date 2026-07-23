@@ -274,16 +274,22 @@ a {
   gap: 12px;
   color: var(--ink);
   font-weight: 500;
+  text-decoration: none;
+}
+
+.text-link__label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 5px;
 }
 
-.text-link span {
+.text-link__arrow {
   color: var(--seal);
   font-size: 21px;
   transition: transform 140ms ease;
 }
 
-.text-link:hover span {
+.text-link:hover .text-link__arrow {
   transform: translateX(4px);
 }
 

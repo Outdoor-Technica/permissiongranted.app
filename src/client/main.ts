@@ -196,7 +196,7 @@ function renderHome(): void {
             <p class="hero__lede">Create a playful permission request. We’ll email it privately. Await the verdict.</p>
             <div class="button-row">
               <a class="button button--primary" href="/create" data-link>Draft a request</a>
-              <a class="text-link" href="/how-it-works" data-link>See how it works <span>→</span></a>
+              <a class="text-link" href="/how-it-works" data-link><span class="text-link__label">See how it works</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
             </div>
           </div>
           <div class="hero__specimen" aria-label="Example request">
@@ -220,7 +220,7 @@ function renderHome(): void {
           <p class="eyebrow">A SMALL BUT IMPORTANT FILE NOTE</p>
           <h2>The joke is the paperwork.<br>The decision is always theirs.</h2>
           <p>Approve and Decline are equally prominent. Email clicks never record a decision. No open tracking, no public requests, no pretending to be Google.</p>
-          <a class="text-link" href="/safety" data-link>Read the safety policy <span>→</span></a>
+          <a class="text-link" href="/safety" data-link><span class="text-link__label">Read the safety policy</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
         </section>
       </main>
       ${footer()}
@@ -420,7 +420,7 @@ function renderCheckEmail(maskedEmail: string, previewUrl?: string): void {
               ? `<a class="button button--primary" href="${escapeHtml(previewUrl)}">Open local preview</a>`
               : ""
           }
-          <a class="text-link" href="/create" data-link>Draft a different request <span>→</span></a>
+          <a class="text-link" href="/create" data-link><span class="text-link__label">Draft a different request</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
         </section>
       </main>
     </div>`,
@@ -437,7 +437,7 @@ function loadingPage(label: string): void {
 
 function privateError(title: string, message: string): void {
   setPage(
-    `<div class="page-shell">${header(true)}<main id="main" class="private-main"><section class="receipt-panel"><p class="eyebrow">FILE NOTE</p><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><a class="text-link" href="/" data-link>Return home <span>→</span></a></section></main></div>`,
+    `<div class="page-shell">${header(true)}<main id="main" class="private-main"><section class="receipt-panel"><p class="eyebrow">FILE NOTE</p><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><a class="text-link" href="/" data-link><span class="text-link__label">Return home</span><span class="text-link__arrow" aria-hidden="true">→</span></a></section></main></div>`,
     title,
   );
 }
@@ -548,7 +548,7 @@ function renderDecisionResult(
             <span aria-hidden="true">${emailStatus === "failed" ? "!" : "✓"}</span>
             ${emailStatus === "failed" ? "The decision was recorded, but the sender email could not be sent." : "Decision recorded. The sender has been notified."}
           </div>
-          <a class="text-link" href="/create" data-link>Create your own request <span>→</span></a>
+          <a class="text-link" href="/create" data-link><span class="text-link__label">Create your own request</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
         </div>
       </main>
     </div>`,
@@ -591,7 +591,7 @@ async function renderRespond(token: string): Promise<void> {
             <button id="record-decision" class="button ${isApprove ? "button--approve" : "button--decline"} button--wide">
               ${isApprove ? "Record approval" : "Record decline"}
             </button>
-            <a class="text-link" href="/" data-link>Leave without deciding <span>→</span></a>
+            <a class="text-link" href="/" data-link><span class="text-link__label">Leave without deciding</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
           </div>
         </main>
       </div>`,
@@ -674,7 +674,7 @@ async function renderManage(token: string): Promise<void> {
                   ? `<button class="text-button text-button--danger" id="disable-request">Disable this request</button>`
                   : ""
               }
-              <a class="text-link" href="/create" data-link>Create another request <span>→</span></a>
+              <a class="text-link" href="/create" data-link><span class="text-link__label">Create another request</span><span class="text-link__arrow" aria-hidden="true">→</span></a>
             </aside>
           </div>
         </main>
