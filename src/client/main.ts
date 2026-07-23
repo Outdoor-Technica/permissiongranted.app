@@ -275,22 +275,22 @@ async function renderCreate(): Promise<void> {
             <fieldset>
               <legend><span>01</span> The people</legend>
               <div class="field-grid">
-                <label>Your name<input name="requesterName" autocomplete="name" maxlength="60" required value="Alex"></label>
-                <label>Their name<input name="recipientName" autocomplete="off" maxlength="60" required value="Sam"></label>
+                <label>Your name<input name="requesterName" autocomplete="name" maxlength="60" required placeholder="Alex"></label>
+                <label>Their name<input name="recipientName" autocomplete="off" maxlength="60" required placeholder="Sam"></label>
               </div>
               <label>Their email<input name="recipientEmail" type="email" autocomplete="off" maxlength="254" required placeholder="sam@example.com"></label>
             </fieldset>
             <fieldset>
               <legend><span>02</span> The request</legend>
-              <label>What are you asking permission for?<input name="requestTitle" maxlength="100" required value="Buy another motorbike"></label>
+              <label>What are you asking permission for?<input name="requestTitle" maxlength="100" required placeholder="Buy another motorbike"></label>
             </fieldset>
             <fieldset>
               <legend><span>03</span> The case</legend>
-              <label>Why should this be approved?<textarea name="justification" maxlength="400" required>The garage has room if we measure creatively.</textarea></label>
+              <label>Why should this be approved?<textarea name="justification" maxlength="400" required placeholder="The garage has room if we measure creatively."></textarea></label>
             </fieldset>
             <fieldset>
               <legend><span>04</span> Delivery and verification</legend>
-              <label>Your email<input name="senderEmail" type="email" autocomplete="email" maxlength="254" required placeholder="alex@example.com"><span class="field-note">We verify you before emailing Sam.</span></label>
+              <label>Your email<input name="senderEmail" type="email" autocomplete="email" maxlength="254" required placeholder="alex@example.com"><span class="field-note">We verify you before emailing them.</span></label>
               <label class="check-label"><input name="acceptableUseAccepted" type="checkbox" required><span>I’m 18 or over, agree to the <a href="/terms" target="_blank">Terms</a>, acknowledge the <a href="/privacy" target="_blank">Privacy Notice</a>, and will send this only to someone who can reasonably expect it from me.</span></label>
               <div id="turnstile" class="turnstile-wrap" aria-label="Anti-bot check"></div>
             </fieldset>
@@ -303,10 +303,10 @@ async function renderCreate(): Promise<void> {
           <p class="eyebrow">LIVE PREVIEW</p>
           <div id="request-preview">
             ${createPreviewMarkup({
-              requesterName: "Alex",
-              recipientName: "Sam",
-              requestTitle: "Buy another motorbike",
-              justification: "The garage has room if we measure creatively.",
+              requesterName: "",
+              recipientName: "",
+              requestTitle: "",
+              justification: "",
             })}
           </div>
           <span class="preview-arrow">Updates as you type ↘</span>

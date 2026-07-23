@@ -584,6 +584,12 @@ a {
   padding: 10px 13px;
 }
 
+.request-form input::placeholder,
+.request-form textarea::placeholder {
+  color: #77736b;
+  opacity: 1;
+}
+
 .request-form textarea,
 .receipt-panel textarea {
   min-height: 116px;
