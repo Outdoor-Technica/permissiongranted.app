@@ -9,10 +9,7 @@ import type {
   ConfirmationResponse,
   PublicRequest,
 } from "../shared/contracts";
-import {
-  hasTurnstileRender,
-  turnstileScriptUrl,
-} from "./turnstile-loader";
+import { hasTurnstileRender } from "./turnstile-loader";
 import "./styles.css";
 
 interface TurnstileApi {
@@ -32,7 +29,6 @@ interface TurnstileApi {
 
 declare global {
   interface Window {
-    permissionGrantedTurnstileReady?: () => void;
     turnstile?: TurnstileApi;
   }
 }
@@ -240,75 +236,10 @@ function createPreviewMarkup(values: {
   });
 }
 
-let turnstileReadyPromise: Promise<void> | null = null;
-
-async function ensureTurnstileReady(): Promise<void> {
-  if (hasTurnstileRender(window.turnstile)) {
-    return;
-  }
-
-  if (turnstileReadyPromise === null) {
-    turnstileReadyPromise = new Promise<void>((resolve, reject) => {
-      const timeoutId = window.setTimeout(() => {
-        reject(new Error("Anti-bot check took too long to load."));
-      }, 10_000);
-      const finish = (error?: Error): void => {
-        window.clearTimeout(timeoutId);
-        delete window.permissionGrantedTurnstileReady;
-        if (error !== undefined) {
-          reject(error);
-          return;
-        }
-        resolve();
-      };
-
-      window.permissionGrantedTurnstileReady = () => {
-        finish(
-          hasTurnstileRender(window.turnstile)
-            ? undefined
-            : new Error("Anti-bot check is unavailable."),
-        );
-      };
-
-      const existing = document.querySelector<HTMLScriptElement>(
-        'script[src^="https://challenges.cloudflare.com/turnstile/"]',
-      );
-      if (existing !== null) {
-        existing.addEventListener(
-          "error",
-          () => finish(new Error("Anti-bot check failed to load.")),
-          { once: true },
-        );
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = turnstileScriptUrl();
-      script.async = true;
-      script.defer = true;
-      script.addEventListener(
-        "error",
-        () => finish(new Error("Anti-bot check failed to load.")),
-        { once: true },
-      );
-      document.head.append(script);
-    });
-  }
-
-  try {
-    await turnstileReadyPromise;
-  } catch (error) {
-    turnstileReadyPromise = null;
-    throw error;
-  }
-}
-
 async function loadTurnstile(
   siteKey: string,
   onToken: (token: string) => void,
 ): Promise<string> {
-  await ensureTurnstileReady();
-
   if (!hasTurnstileRender(window.turnstile)) {
     throw new Error("Anti-bot check is unavailable.");
   }

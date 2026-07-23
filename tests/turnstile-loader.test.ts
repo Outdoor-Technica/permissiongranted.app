@@ -1,18 +1,17 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import {
-  hasTurnstileRender,
-  TURNSTILE_READY_CALLBACK,
-  turnstileScriptUrl,
-} from "../src/client/turnstile-loader";
+import { hasTurnstileRender } from "../src/client/turnstile-loader";
 
 describe("Turnstile loader", () => {
-  it("waits for Cloudflare's explicit readiness callback", () => {
-    const url = new URL(turnstileScriptUrl());
+  it("loads Cloudflare before the application module", () => {
+    const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+    const turnstilePosition = html.indexOf(
+      "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",
+    );
+    const applicationPosition = html.indexOf("/src/client/main.ts");
 
-    expect(url.origin).toBe("https://challenges.cloudflare.com");
-    expect(url.pathname).toBe("/turnstile/v0/api.js");
-    expect(url.searchParams.get("onload")).toBe(TURNSTILE_READY_CALLBACK);
-    expect(url.searchParams.get("render")).toBe("explicit");
+    expect(turnstilePosition).toBeGreaterThan(-1);
+    expect(applicationPosition).toBeGreaterThan(turnstilePosition);
   });
 
   it("does not treat Cloudflare's early global stub as ready", () => {
