@@ -5,6 +5,13 @@
   "private": true,
   "license": "MIT",
   "homepage": "https://permissiongranted.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Outdoor-Technica/permissiongranted.app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Outdoor-Technica/permissiongranted.app/issues"
+  },
   "type": "module",
   "scripts": {
     "build": "vite build",
