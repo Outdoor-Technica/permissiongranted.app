@@ -26,7 +26,9 @@ describe("production legal content", () => {
 
     expect(LEGAL_VERSION).toBe("23 July 2026");
     expect(STORED_LEGAL_VERSION).toBe("2026-07-23");
-    expect(text).toContain("Aryan Alipour");
+    expect(text).toContain("Outdoor Technica Ltd");
+    expect(text).toContain("12993927");
+    expect(text).toContain("39 Devonshire Park");
     expect(text).toContain("privacy@permissiongranted.app");
     expect(text).toContain("lawful basis");
     expect(text).toContain("legitimate interests");

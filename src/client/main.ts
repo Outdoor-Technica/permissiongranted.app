@@ -810,7 +810,7 @@ function renderLegalPage(document: LegalDocument): void {
           <p>${escapeHtml(document.summary)}</p>
           <dl class="legal-meta">
             <div><dt>Effective</dt><dd>${escapeHtml(LEGAL_VERSION)}</dd></div>
-            <div><dt>Operator</dt><dd>Aryan Alipour trading as Permission Granted</dd></div>
+            <div><dt>Operator</dt><dd>Outdoor Technica Ltd · Company 12993927</dd></div>
             <div><dt>Contact</dt><dd><a href="mailto:privacy@permissiongranted.app">privacy@permissiongranted.app</a></dd></div>
           </dl>
         </header>

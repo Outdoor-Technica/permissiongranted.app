@@ -31,7 +31,7 @@ export const privacyNotice: LegalDocument = {
     {
       id: "controller",
       title: "1. Who is responsible",
-      body: `<p><strong>Aryan Alipour, trading as Permission Granted</strong>, is the controller of the personal information described in this notice. Permission Granted is operated from England.</p>
+      body: `<p><strong>Outdoor Technica Ltd</strong> is the controller of the personal information described in this notice and operates Permission Granted. Outdoor Technica Ltd is registered in England and Wales under company number 12993927, with its registered office at 39 Devonshire Park, Reading, England, RG2 7DX.</p>
         <p>Privacy questions and data-rights requests can be sent to ${privacyEmail}. General service questions can be sent to ${supportEmail}.</p>`,
     },
     {
@@ -141,7 +141,7 @@ export const termsOfService: LegalDocument = {
     {
       id: "operator",
       title: "1. About these Terms",
-      body: `<p>Permission Granted is operated by <strong>Aryan Alipour, trading as Permission Granted</strong>, from England (“Permission Granted”, “we”, “us”). Contact us at ${supportEmail}.</p>
+      body: `<p>Permission Granted is operated by <strong>Outdoor Technica Ltd</strong>, a company registered in England and Wales under company number 12993927, with its registered office at 39 Devonshire Park, Reading, England, RG2 7DX (“Permission Granted”, “we”, “us”). Contact us at ${supportEmail}.</p>
         <p>By submitting a request, you confirm that you are at least 18 and agree to these Terms. A recipient does not agree to these Terms merely because somebody emails them; the recipient remains free to ignore, decline, or report the request.</p>`,
     },
     {

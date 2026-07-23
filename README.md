@@ -46,7 +46,7 @@ The production application is deployed at `https://permissiongranted.app`.
 - Worker: `permission-granted`
 - D1 database: `permission-granted`
 - Email Sending domain: `permissiongranted.app`
-- Email Routing contacts: `privacy@permissiongranted.app` and `support@permissiongranted.app`
+- Email Routing contacts: `privacy@permissiongranted.app` and `support@permissiongranted.app`, forwarded to `aryan@outdoortechnica.com`
 - Turnstile widget: restricted to `permissiongranted.app`
 - Scheduled cleanup: `17 3 * * *`
 
